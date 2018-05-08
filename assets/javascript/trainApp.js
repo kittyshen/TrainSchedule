@@ -46,14 +46,16 @@ function renderTrainTable(database){
     //inner function to render table data entry
     function newDataRow(a,b,c,d,e){
         var newTableRow = $("<tr>");
-        newTableRow.html("<td>"+a+"</td>"+"<td>"+b+"</td>"+"<td>"+c+"</td>"+"<td>"+d+"</td>"+"<td>"+e+"</td>" );
+        newTableRow.html("<td>"+a+"</td>"+"<td>"+b+"</td>"+"<td>"+c+"</td>"+"<td>"+d+"</td>"+"<td>"+e+"</td><hr>" );
         $("#trainTable").append(newTableRow);
     }
     // newDataRow(4,7,6,2,8);
 
     //inner function calculate time
+    //testing moment.js
+    console.log(moment().endOf('day').fromNow());
     function calcTime(sth){
-        
+
 
 
     }
@@ -62,6 +64,7 @@ function renderTrainTable(database){
         console.log(snapshot.val());
 
         for(var prop in snapshot.val()){
+            if(parseInt(prop)>maxEntry)  maxEntry = parseInt(prop);
             console.log(snapshot.val()[prop]);
             var trainName = snapshot.val()[prop].trainName;
             var trainDest = snapshot.val()[prop].trainDest;
@@ -71,17 +74,33 @@ function renderTrainTable(database){
         }
     });
 
-
-
 }
+var maxEntry =1;  // use this to keep track of train entry index
 renderTrainTable(database);
 
 
 //Deal with add new train form
-var newTrainName = "";
-var newTrainDest = "";
-var newTrainFirst = "";
-var newTrainFreq = 0;
 
 //grab current time on computer store on varible for calculation
-var currentTime = "";
+// var currentTime = "";
+$("#add-train").on("click",function(event){
+    event.preventDefault();
+    var newTrainName = $("#name-input").val().trim();
+    var newTrainDest = $("#destination-input").val().trim();
+    var newTrainFirst = $("#firstTrain-input").val().trim();
+    var newTrainFreq = $("#frequency-input").val().trim();
+
+    var newEntryIndex = maxEntry+1;
+    console.log(newEntryIndex);
+    database.ref("/trainInfo").set({
+            [newEntryIndex] : {
+                trainName: newTrainName,
+                trainDest: newTrainDest,
+                trainFirst: newTrainFirst,
+                trainFreq: newTrainFreq,
+            }
+        }
+    )
+
+
+})
