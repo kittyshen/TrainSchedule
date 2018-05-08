@@ -27,12 +27,26 @@ firebase.initializeApp(config);
 
 // Create a variable to reference the database
 var database = firebase.database();
-//testing write to database
-database.ref("/trainInfo").set({
+
+//create a globe variable to reference current database image so we can use later as a easy reference point
+var currentDataSnap ;
+
+database.ref("/trainInfo").on("value",function(snapshot){
+    console.log(snapshot.val());
+    currentDataSnap = snapshot.val();
+});
+
+// initial testing object
+var obj = {
     1:{trainName : "express", trainDest : "meow planet", trainFirst: "07:00", trainFreq:"30" },
     2:{trainName : "express2", trainDest : "meow planet", trainFirst: "08:00", trainFreq:"20" },
-    3:{trainName : "express3", trainDest : "meow planet", trainFirst: "09:00", trainFreq:"10" }
-});
+    3:{trainName : "express3", trainDest : "meow planet", trainFirst: "09:00", trainFreq:"10" },
+    4:{trainName : "express4", trainDest : "meow planet", trainFirst: "09:00", trainFreq:"10" },
+}
+
+database.ref("/trainInfo").set(obj);
+console.log(currentDataSnap);
+
 
 //create the train display table
 function renderTrainTable(database){
@@ -54,11 +68,12 @@ function renderTrainTable(database){
     //inner function calculate time
     //testing moment.js
     console.log(moment().endOf('day').fromNow());
+    console.log(moment().format('LT'));
+    
     function calcTime(sth){
 
-
-
     }
+
     //grab data from database
     database.ref("/trainInfo").on("value",function(snapshot){
         console.log(snapshot.val());
@@ -80,9 +95,6 @@ renderTrainTable(database);
 
 
 //Deal with add new train form
-
-//grab current time on computer store on varible for calculation
-// var currentTime = "";
 $("#add-train").on("click",function(event){
     event.preventDefault();
     var newTrainName = $("#name-input").val().trim();
@@ -92,15 +104,16 @@ $("#add-train").on("click",function(event){
 
     var newEntryIndex = maxEntry+1;
     console.log(newEntryIndex);
-    database.ref("/trainInfo").set({
-            [newEntryIndex] : {
-                trainName: newTrainName,
-                trainDest: newTrainDest,
-                trainFirst: newTrainFirst,
-                trainFreq: newTrainFreq,
-            }
-        }
-    )
 
-
+    //grab the value from the user input on the add train form and save it as a new 
+    //key/value pair into the current currentDataSnap object
+    currentDataSnap[newEntryIndex] = {
+        trainName: newTrainName,
+        trainDest: newTrainDest,
+        trainFirst: newTrainFirst,
+        trainFreq: newTrainFreq,
+    }
+    //write the currentDataSnap object back to the firebase server
+    database.ref("/trainInfo").set(currentDataSnap);
+    //end of click envet
 })
