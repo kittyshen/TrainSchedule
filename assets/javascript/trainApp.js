@@ -37,21 +37,22 @@ database.ref("/trainInfo").on("value",function(snapshot){
 });
 
 // initial testing object
-var obj = {
-    1:{trainName : "express", trainDest : "meow planet", trainFirst: "07:00", trainFreq:"30" },
-    2:{trainName : "express2", trainDest : "meow planet", trainFirst: "08:00", trainFreq:"20" },
-    3:{trainName : "express3", trainDest : "meow planet", trainFirst: "09:00", trainFreq:"10" },
-    4:{trainName : "express4", trainDest : "meow planet", trainFirst: "09:00", trainFreq:"10" },
-}
+// var obj = {
+//     1:{trainName : "express", trainDest : "meow planet", trainFirst: "07:00", trainFreq:"30" },
+//     2:{trainName : "express2", trainDest : "meow planet", trainFirst: "08:00", trainFreq:"20" },
+//     3:{trainName : "express3", trainDest : "meow planet", trainFirst: "09:00", trainFreq:"10" },
+//     4:{trainName : "express4", trainDest : "meow planet", trainFirst: "09:00", trainFreq:"10" },
+// }
 
-database.ref("/trainInfo").set(obj);
+// database.ref("/trainInfo").set(obj);
 console.log(currentDataSnap);
-
 
 //create the train display table
 function renderTrainTable(database){
-    //create table header
+    // clear the table for new render circle
+    $("#trainTable").empty();
 
+    //create table header
     var newTableRow = $("<tr>");
     // abit hard code table header 
     newTableRow.html("<th>Train Name</th><th>Destination</th><th>Frequency</th><th>Next Arrival</th><th>Minutes Away</th>");
@@ -91,12 +92,15 @@ function renderTrainTable(database){
 
 }
 var maxEntry =1;  // use this to keep track of train entry index
-renderTrainTable(database);
 
+renderTrainTable(database);
 
 //Deal with add new train form
 $("#add-train").on("click",function(event){
     event.preventDefault();
+    // clear the table for new render circle
+    $("#trainTable").empty();
+
     var newTrainName = $("#name-input").val().trim();
     var newTrainDest = $("#destination-input").val().trim();
     var newTrainFirst = $("#firstTrain-input").val().trim();
@@ -116,4 +120,8 @@ $("#add-train").on("click",function(event){
     //write the currentDataSnap object back to the firebase server
     database.ref("/trainInfo").set(currentDataSnap);
     //end of click envet
+
+    //rerender the table
+    renderTrainTable(database);
+
 })
