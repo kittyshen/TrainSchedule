@@ -16,14 +16,72 @@ Step11 for the bonus auto update table part, using a interval event update the N
 
 // Initialize Firebase
 var config = {
-    apiKey: "AIzaSyCgWlrgMxnM-bb24w8bPIDfHoVi5xnORP0",
-    authDomain: "testing-firebase-37b28.firebaseapp.com",
-    databaseURL: "https://testing-firebase-37b28.firebaseio.com",
-    projectId: "testing-firebase-37b28",
-    storageBucket: "",
-    messagingSenderId: "586365601535"
+    apiKey: "AIzaSyD5gdh0iLkvvLqP3EQEBCpnSumbLdL-ZPA",
+    authDomain: "train-schedule-project-744bd.firebaseapp.com",
+    databaseURL: "https://train-schedule-project-744bd.firebaseio.com",
+    projectId: "train-schedule-project-744bd",
+    storageBucket: "train-schedule-project-744bd.appspot.com",
+    messagingSenderId: "148334392862"
 };
 firebase.initializeApp(config);
 
 // Create a variable to reference the database
 var database = firebase.database();
+//testing write to database
+database.ref("/trainInfo").set({
+    1:{trainName : "express", trainDest : "meow planet", trainFirst: "07:00", trainFreq:"30" },
+    2:{trainName : "express2", trainDest : "meow planet", trainFirst: "08:00", trainFreq:"20" },
+    3:{trainName : "express3", trainDest : "meow planet", trainFirst: "09:00", trainFreq:"10" }
+});
+
+//create the train display table
+function renderTrainTable(database){
+    //create table header
+
+    var newTableRow = $("<tr>");
+    // abit hard code table header 
+    newTableRow.html("<th>Train Name</th><th>Destination</th><th>Frequency</th><th>Next Arrival</th><th>Minutes Away</th>");
+    $("#trainTable").append(newTableRow);
+
+    //inner function to render table data entry
+    function newDataRow(a,b,c,d,e){
+        var newTableRow = $("<tr>");
+        newTableRow.html("<td>"+a+"</td>"+"<td>"+b+"</td>"+"<td>"+c+"</td>"+"<td>"+d+"</td>"+"<td>"+e+"</td>" );
+        $("#trainTable").append(newTableRow);
+    }
+    // newDataRow(4,7,6,2,8);
+
+    //inner function calculate time
+    function calcTime(sth){
+        
+
+
+    }
+    //grab data from database
+    database.ref("/trainInfo").on("value",function(snapshot){
+        console.log(snapshot.val());
+
+        for(var prop in snapshot.val()){
+            console.log(snapshot.val()[prop]);
+            var trainName = snapshot.val()[prop].trainName;
+            var trainDest = snapshot.val()[prop].trainDest;
+            var trainFirst = snapshot.val()[prop].trainFirst;
+            var trainFreq = snapshot.val()[prop].trainFreq;
+            newDataRow(trainName,trainDest,trainFreq)
+        }
+    });
+
+
+
+}
+renderTrainTable(database);
+
+
+//Deal with add new train form
+var newTrainName = "";
+var newTrainDest = "";
+var newTrainFirst = "";
+var newTrainFreq = 0;
+
+//grab current time on computer store on varible for calculation
+var currentTime = "";
