@@ -31,10 +31,10 @@ var database = firebase.database();
 //create a globe variable to reference current database image so we can use later as a easy reference point
 var currentDataSnap ;
 
-database.ref("/trainInfo").on("value",function(snapshot){
-    console.log(snapshot.val());
-    currentDataSnap = snapshot.val();
-});
+// database.ref("/trainInfo").on("value",function(snapshot){
+//     console.log(snapshot.val());
+//     currentDataSnap = snapshot.val();
+// });
 
 // initial testing object
 // var obj = {
@@ -45,7 +45,7 @@ database.ref("/trainInfo").on("value",function(snapshot){
 // }
 
 // database.ref("/trainInfo").set(obj);
-console.log(currentDataSnap);
+// console.log(currentDataSnap);
 
 //create the train display table
 function renderTrainTable(database){
@@ -68,25 +68,60 @@ function renderTrainTable(database){
 
     //inner function calculate time
     //testing moment.js
-    console.log(moment().endOf('day').fromNow());
-    console.log(moment().format('LT'));
+    // console.log(moment().endOf('day').fromNow());
+    // console.log(moment().format('LT'));
     
-    function calcTime(sth){
-
+    function calcTimeDiff(start,frequency){
+       var difference = Math.abs(moment().diff(moment.unix(start, "X"), "minute"));
+    //    difference/frequency
+       console.log(moment.unix(start, "X").format("HH:mm"));
+       console.log(difference);
+       console.log(parseInt(frequency));
+       console.log(parseInt(difference) % parseInt(frequency));
+       return parseInt(difference) % parseInt(frequency);
     }
+    //testing
+    calcNextTrain("1525831920","30");
+    calcNextTrain("1525849020","60");
+
+    function calcNextTrain(start,frequency){
+        console.log(" First Train : " + moment.unix(start, "X").format("HH:mm") + " Train every : "+frequency);
+        var difference = Math.abs(moment().diff(moment.unix(start, "X"), "minute"));
+        console.log(difference);
+        // current 19:50
+        // y = 560  //difference 560 mins
+        // x =560//30 = 18
+        // next train time = 10:30 + (x+1)* 30 = 20:00
+        var numberOfTrainPassed = Math.floor(difference/frequency);
+        // console.log("numberOfTrainPassed: "+ numberOfTrainPassed);
+        // console.log("start time in seconds "+ Math.floor(start/60));
+        var nextTrainTime = Math.floor(start/60) + frequency*(numberOfTrainPassed+1);
+        // convert train time back to unix time stamp by *60
+        console.log("Next train: "+moment.unix(nextTrainTime*60, "X").format("HH:mm")); 
+        var train =[]
+        train[0] = moment.unix(nextTrainTime*60, "X").format("HH:mm");  // get next train time info
+        train[1] = Math.abs(moment().diff(moment.unix(nextTrainTime*60, "X"), "minute")); // get mins away info
+        // console.log("fdsfsadf sfdf : "+away2);
+        return train;
+     }
 
     //grab data from database
     database.ref("/trainInfo").on("value",function(snapshot){
-        console.log(snapshot.val());
+        // console.log(snapshot.val());
+        //store reference of current database image 
+        currentDataSnap = snapshot.val();
 
         for(var prop in snapshot.val()){
             if(parseInt(prop)>maxEntry)  maxEntry = parseInt(prop);
-            console.log(snapshot.val()[prop]);
+            // console.log(snapshot.val()[prop]);
             var trainName = snapshot.val()[prop].trainName;
             var trainDest = snapshot.val()[prop].trainDest;
             var trainFirst = snapshot.val()[prop].trainFirst;
             var trainFreq = snapshot.val()[prop].trainFreq;
-            newDataRow(trainName,trainDest,trainFreq)
+            var nextTrain;
+            nextTrain  = calcNextTrain(trainFirst,trainFreq);
+            // var trainArrive =
+            newDataRow(trainName,trainDest,trainFreq,nextTrain[0],nextTrain[1]);
         }
     });
 
@@ -98,14 +133,14 @@ renderTrainTable(database);
 //Deal with add new train form
 $("#add-train").on("click",function(event){
     event.preventDefault();
-    // clear the table for new render circle
+    // clear the table for new render circle 
     $("#trainTable").empty();
 
     var newTrainName = $("#name-input").val().trim();
     var newTrainDest = $("#destination-input").val().trim();
-    var newTrainFirst = $("#firstTrain-input").val().trim();
+    // var newTrainFirst = $("#firstTrain-input").val().trim();
+    var newTrainFirst = moment($("#firstTrain-input").val().trim(), "hh/mm").format("X");
     var newTrainFreq = $("#frequency-input").val().trim();
-
     var newEntryIndex = maxEntry+1;
     console.log(newEntryIndex);
 
