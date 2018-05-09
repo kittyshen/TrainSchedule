@@ -9,10 +9,10 @@ html{
 }
 body {
     margin-bottom:0px;  /*important adding this margin if use "sticky footer" in bootstrap otherwise some content might get covered by footer space */
-    background-image:url("../images/circles-dark.png");
     background-repeat: round;
     min-height:100%;
     color:rgb(79, 79, 79);
+    background-image:url("../images/circles-dark.png");
 }
 .container{
     min-height:100%;
@@ -21,11 +21,14 @@ body {
 }
 h1{
     font-size:2.3em;
-    color:rgb(210, 210, 210);
+    font-weight: bold;
+    color:rgb(2, 152, 226);
+    line-height: 3em;
+    margin-top:-0.5em;
 }
-h2{
-    font-size:2em;
-    color:rgb(210, 210, 210);
+h3{
+    font-size:1.6em;
+    color:rgb(2, 152, 226);
 }
 h4{
     font-size:1.7em ;
@@ -58,7 +61,8 @@ table{
 .footer{
     clear: both;
     height:80px;
-    background-color: rgb(79, 0, 0);
+    color:white;
+    background-color: rgb(2, 152, 226);;
     /* border-top: 8px solid #66bce4; */
     padding-top: 30px;
     text-align:center;
@@ -70,12 +74,11 @@ table{
 
 .header{
     text-align: center;
-    margin: 0 auto;
-    /* padding: 0.3em 0; */
+    margin-top: -1em;
+    padding: 0.8em 0;
     background-color: rgb(79, 0, 0);
-    /* border: 0.3em solid #66bce4; */
+    background-image:url("../images/bullet_train2.png");
     /* border-radius:.5em; */
-
 }
 .row{
     padding:0.8em;
@@ -94,7 +97,16 @@ table{
 
     /* box-shadow: 0.05em 0.05em rgb(146, 146, 146); */
 }
+#trainTable{
+    line-height: 2em;
+}
+#trainTable > tr >td{
+    border-top: 1px solid rgb(210, 210, 210); 
 
+}
+#trainform{
+    line-height: 1em;
+}
 
 .container{
     min-height:100%;
