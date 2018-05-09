@@ -39,9 +39,9 @@ var currentDataSnap ;
 // initial testing object
 // var obj = {
 //     1:{trainName : "express", trainDest : "meow planet", trainFirst: "07:00", trainFreq:"30" },
-//     2:{trainName : "express2", trainDest : "meow planet", trainFirst: "08:00", trainFreq:"20" },
-//     3:{trainName : "express3", trainDest : "meow planet", trainFirst: "09:00", trainFreq:"10" },
-//     4:{trainName : "express4", trainDest : "meow planet", trainFirst: "09:00", trainFreq:"10" },
+//     // 2:{trainName : "express2", trainDest : "meow planet", trainFirst: "08:00", trainFreq:"20" },
+//     // 3:{trainName : "express3", trainDest : "meow planet", trainFirst: "09:00", trainFreq:"10" },
+//     // 4:{trainName : "express4", trainDest : "meow planet", trainFirst: "09:00", trainFreq:"10" },
 // }
 
 // database.ref("/trainInfo").set(obj);
@@ -81,8 +81,8 @@ function renderTrainTable(database){
        return parseInt(difference) % parseInt(frequency);
     }
     //testing
-    calcNextTrain("1525831920","30");
-    calcNextTrain("1525849020","60");
+    // calcNextTrain("1525831920","30");
+    // calcNextTrain("1525849020","60");
 
     function calcNextTrain(start,frequency){
         console.log(" First Train : " + moment.unix(start, "X").format("HH:mm") + " Train every : "+frequency);
@@ -112,7 +112,9 @@ function renderTrainTable(database){
         currentDataSnap = snapshot.val();
 
         for(var prop in snapshot.val()){
-            if(parseInt(prop)>maxEntry)  maxEntry = parseInt(prop);
+            if(parseInt(prop)>maxEntry) {
+                maxEntry = parseInt(prop);  //keeptrack of the current max index number of entries on firbase server
+            } 
             // console.log(snapshot.val()[prop]);
             var trainName = snapshot.val()[prop].trainName;
             var trainDest = snapshot.val()[prop].trainDest;
@@ -124,11 +126,11 @@ function renderTrainTable(database){
             newDataRow(trainName,trainDest,trainFreq,nextTrain[0],nextTrain[1]);
         }
     });
-
 }
 var maxEntry =1;  // use this to keep track of train entry index
 
 renderTrainTable(database);
+setInterval(function(){renderTrainTable(database)},60*1000); //set interval to run auto updating train table info
 
 //Deal with add new train form
 $("#add-train").on("click",function(event){
@@ -139,7 +141,7 @@ $("#add-train").on("click",function(event){
     var newTrainName = $("#name-input").val().trim();
     var newTrainDest = $("#destination-input").val().trim();
     // var newTrainFirst = $("#firstTrain-input").val().trim();
-    var newTrainFirst = moment($("#firstTrain-input").val().trim(), "hh/mm").format("X");
+    var newTrainFirst = moment($("#firstTrain-input").val().trim(), "HH/mm").format("X");
     var newTrainFreq = $("#frequency-input").val().trim();
     var newEntryIndex = maxEntry+1;
     console.log(newEntryIndex);
@@ -158,5 +160,8 @@ $("#add-train").on("click",function(event){
 
     //rerender the table
     renderTrainTable(database);
-
+    $("#name-input").val("");
+    $("#destination-input").val("");
+    $("#firstTrain-input").val("");
+    $("#frequency-input").val("");
 })
