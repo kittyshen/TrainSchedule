@@ -44,9 +44,55 @@ In this assignment, you'll create a train schedule application that incorporates
 
 ## Key learning points
 ```javascript
-
+database.ref("/trainInfo").set(obj);
 ```
-* 
+* syntax for reference a fire base database with subFolder and set it with new object
+
+```javascript
+database.ref("/trainInfo").on("value",function(snapshot){
+  currentDataSnap = snapshot.val();
+    for(var prop in snapshot.val()){
+      if(parseInt(prop)>maxEntry) {
+        maxEntry = parseInt(prop);  //keeptrack of the current max index number of entries 
+      } 
+      var trainName = snapshot.val()[prop].trainName;
+      ...
+      var nextTrain;
+      nextTrain  = calcNextTrain(trainFirst,trainFreq);
+      newDataRow(trainName,trainDest,trainFreq,nextTrain[0],nextTrain[1]);
+    }
+});
+```
+* syntax for retrieve a fire base database data, need to add [] on property key to retrive value, function can return multiple value if return an array datatype
+
+```javascript
+  var newTrainFirst = moment($("#firstTrain-input").val().trim(), "HH/mm").format("X");
+```
+* syntax moment js to convert time entry into uxit time formate
+
+```javascript
+currentDataSnap[newEntryIndex] = {
+    trainName: newTrainName,
+    ...
+}
+database.ref("/trainInfo").set(currentDataSnap);
+```
+* if using a variable to dymanic assign key:value pair to a obj, make sure to put the key varialble inside a [ ]
+
+
+```javascript
+function calcNextTrain(start,frequency){
+    var difference = Math.abs(moment().diff(moment.unix(start, "X"), "minute"));
+    var numberOfTrainPassed = Math.floor(difference/frequency);
+    var nextTrainTime = Math.floor(start/60) + frequency*(numberOfTrainPassed+1);
+    var train =[]
+    train[0] = moment.unix(nextTrainTime*60, "X").format("HH:mm"); // get next train time info
+    train[1] = Math.abs(moment().diff(moment.unix(nextTrainTime*60, "X"), "minute")); 
+    return train;
+}
+```
+* very hard moment.js function calls which involve impossible to read unix timestamp. this short code took me hours to figure out. maybe there are better funtion to calc time difference that I am not aware of.
+
 
 ## Installation
 Download the zip file, unzip on the desktop, open index.html

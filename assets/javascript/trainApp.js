@@ -70,19 +70,7 @@ function renderTrainTable(database){
     //testing moment.js
     // console.log(moment().endOf('day').fromNow());
     // console.log(moment().format('LT'));
-    
-    function calcTimeDiff(start,frequency){
-       var difference = Math.abs(moment().diff(moment.unix(start, "X"), "minute"));
-    //    difference/frequency
-       console.log(moment.unix(start, "X").format("HH:mm"));
-       console.log(difference);
-       console.log(parseInt(frequency));
-       console.log(parseInt(difference) % parseInt(frequency));
-       return parseInt(difference) % parseInt(frequency);
-    }
-    //testing
-    // calcNextTrain("1525831920","30");
-    // calcNextTrain("1525849020","60");
+
 
     function calcNextTrain(start,frequency){
         console.log(" First Train : " + moment.unix(start, "X").format("HH:mm") + " Train every : "+frequency);
@@ -104,7 +92,10 @@ function renderTrainTable(database){
         // console.log("fdsfsadf sfdf : "+away2);
         return train;
      }
-
+    //testing
+    // calcNextTrain("1525831920","30");
+    // calcNextTrain("1525849020","60");
+    
     //grab data from database
     database.ref("/trainInfo").on("value",function(snapshot){
         // console.log(snapshot.val());

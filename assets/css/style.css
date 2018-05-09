@@ -34,26 +34,7 @@ h4{
     font-size:1.7em ;
     color:rgb(210, 210, 210);
 }
-.badge{
-    color:rgb(210, 210, 210);
-    background-color: rgb(75, 75, 75);
-    border:1px solid rgb(126, 126, 126);
-    box-shadow: 0.1em 0.1em rgb(220, 220, 220);
-    margin : 0 0.3em;
 
-}
-.badge:empty{
-    display:block;
-    margin-top:0.3em;
-}
-.images{
-    max-block-size: 200px;
-    max-width: 230px;
-    float:left;
-    margin-left: auto; 
-    margin-right: auto; 
-    display: block; 
-}
 table{
     width:100%;
 }
@@ -126,21 +107,11 @@ table{
     h1{
         font-size:2em;
     }
-    h2{
+    h3{
         font-size:1.4em;
     }
     h4{
         font-size:1.2em;
-    }
-
-    .imgCenter{
-        margin-left:0;
-        margin-right:auto;
-        width: 100%;
-    }
-    img{
-        max-block-size: 180px !important;
-        float:left;
     }
 
    .col-xs-6, .col-sm-6{
